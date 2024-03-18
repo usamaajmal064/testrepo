@@ -11,7 +11,7 @@ jobs:
 
     runs-on: self-hosted
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Use Node.js 
       uses: actions/setup-node@v1
       with:
@@ -20,19 +20,9 @@ jobs:
       run: |
         npm install
         npm run test:web:consumer
+        npm run publish:pact
       env:
         CI: true
 
-  publish-pact:
-    needs: [test]
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 
-        uses: actions/setup-node@v1
-        with:
-          node-version: 20.10.0
-      - name: publish consumer pact
-        run: |
-          npm run publish:pact
+  
           
