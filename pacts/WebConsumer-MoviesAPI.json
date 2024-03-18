@@ -1,0 +1,157 @@
+{
+  "consumer": {
+    "name": "WebConsumer"
+  },
+  "interactions": [
+    {
+      "description": "a request to all movies",
+      "request": {
+        "method": "GET",
+        "path": "/movies"
+      },
+      "response": {
+        "body": [
+          {
+            "id": 1,
+            "name": "The Shawshank Redemption",
+            "year": 1994
+          }
+        ],
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to a specific movie",
+      "providerStates": [
+        {
+          "name": "Has a movie with specific ID",
+          "params": {
+            "id": 1
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/movie/1"
+      },
+      "response": {
+        "body": {
+          "id": 1,
+          "name": "The Shawshank Redemption",
+          "year": 1994
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.year": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request with wrong id",
+      "providerStates": [
+        {
+          "name": "Has a movie with specific ID",
+          "params": {
+            "id": 100
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/movie/100"
+      },
+      "response": {
+        "body": "Movie not found",
+        "headers": {
+          "Content-Type": "text/html; charset=utf-8"
+        },
+        "status": 404
+      }
+    },
+    {
+      "description": "upon recieving a new POST request",
+      "providerStates": [
+        {
+          "name": "movie doesnot exist"
+        }
+      ],
+      "request": {
+        "body": {
+          "name": "test movie",
+          "year": 2001
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/movies/create"
+      },
+      "response": {
+        "body": "new movie created",
+        "headers": {
+          "Content-Type": "text/html; charset=utf-8"
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pact-js": {
+      "version": "12.1.0"
+    },
+    "pactRust": {
+      "ffi": "0.4.9",
+      "models": "1.1.11"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "MoviesAPI"
+  }
+}
